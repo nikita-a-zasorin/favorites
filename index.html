@@ -1,0 +1,62 @@
+<html>
+  <head>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
+  </head>
+  <body ng-app="myModule" ng-controller="myController as appController">
+  	<script type="text/javascript">
+  	
+  	var myModule = angular.module('myModule', []);
+
+myModule.controller('myController', function(favoritesList) {
+    this.favorites = favoritesList.getAllFavorites();
+    
+    
+    this.getTotalFavorites = function () {
+    return this.favorites.length;
+  };
+  
+  this.addFavorite = function () {
+    this.favorites.push({text: this.formFavoriteText, done:false});
+    this.formFavoriteText = '';
+  };
+  
+  this.clearCompleted = function () {
+        this.favorites = _.filter(this.favorites, function(favorite){
+            return !favorite.done;
+        });
+    };
+
+});
+
+myModule.factory('favoritesList', function() {
+    return {
+        getAllFavorites: function() {
+            return [
+                {text:'Pizza', done:false},         
+    			{text: 'Cookies', done:false}
+            ];
+        }
+    };
+});
+  	
+  	</script>
+    <div>
+      <h2>Favorite: <span>{{appController.getTotalFavorites()}}</span></h2>
+      <ul>
+        <li ng-repeat="favorite in appController.favorites">
+          <input type="checkbox" ng-model="favorite.done"/>
+          <span>{{favorite.text}}</span>
+        </li>
+      </ul>
+      <form>
+        <input placeholder="Favorites" type="text" ng-model="appController.formFavoriteText" ng-model-instant />
+        <button ng-click="appController.addFavorite()"><h2>Add favorite</h2></button>
+      </form>
+      
+      <button ng-click="appController.clearCompleted()">Delete chosen</button>
+      
+      <span>{{appController.favorites | json}}</span>
+    </div>
+  </body>
+  
+</html>
